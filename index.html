@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="SiteLine 감리·턴온 일정">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="SiteLine">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>SiteLine</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- 홈 화면 설치: 앱이 뜨기 전에 오는 설치 가능 신호를 붙잡아 두고, 앱의 [설치] 버튼에서 쓴다 -->
+  <script>
+    window.__siteline = { prompt: null };
+    addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      window.__siteline.prompt = e;
+      dispatchEvent(new Event('siteline-installable'));
+    });
+    addEventListener('appinstalled', function () {
+      window.__siteline.prompt = null;
+      dispatchEvent(new Event('siteline-installed'));
+    });
+    window.__sitelineInstall = function () {
+      var p = window.__siteline.prompt;
+      if (!p) return Promise.resolve('unavailable');
+      window.__siteline.prompt = null;
+      p.prompt();
+      return p.userChoice.then(function (r) { return r.outcome; });
+    };
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
